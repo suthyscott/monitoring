@@ -8,13 +8,26 @@ const rollbar = new Rollbar({
     captureUnhandledRejections: true
 })
 
+const students = []
 const app = express()
+
+app.use(rollbar.errorHandler())
 
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
     rollbar.info('html file served successfully.')
 })
 
+app.post('/api/student', (req, res)=> {
+    const {name} = req.body
+    name = name.trim()
+
+    students.push(name)
+
+    rollbar.log('Student added successfully', {author: 'Scott', type: 'manual entry'})
+
+    res.status(200).send(students)
+})
 const port = process.env.PORT || 4545
 
 app.listen(port, () => console.log(`Take us to warp ${port}!`))
