@@ -11,8 +11,6 @@ const rollbar = new Rollbar({
 const students = []
 const app = express()
 
-app.use(rollbar.errorHandler())
-
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
     rollbar.info('html file served successfully.')
@@ -29,5 +27,7 @@ app.post('/api/student', (req, res)=> {
     res.status(200).send(students)
 })
 const port = process.env.PORT || 4545
+
+app.use(rollbar.errorHandler())
 
 app.listen(port, () => console.log(`Take us to warp ${port}!`))
